@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(version: 2018_01_20_223423) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
 end

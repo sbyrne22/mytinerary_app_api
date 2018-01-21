@@ -5,9 +5,9 @@ class UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all
+    users = User.all
 
-    render json: @users
+    render json: users
   end
 
   # GET /users/1
@@ -17,27 +17,28 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    @user = User.new(user_params)
+    user = User.new(user_params)
 
-    if @user.save
-      render json: @user, status: :created, location: @user
+    if user.save
+      token = create_token(user.id, user.username)
+      render json: {status: :created, location: user, token: token, user: user}
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: user.errors, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /users/1
   def update
-    if @user.update(user_params)
-      render json: @user
+    if user.update(user_params)
+      render json: user
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: user.errors, status: :unprocessable_entity
     end
   end
 
   # DELETE /users/1
   def destroy
-    @user.destroy
+    user.destroy
   end
 
   def login
@@ -58,6 +59,16 @@ class UsersController < ApplicationController
   end
 
   private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_user
+      user = User.find(params[:id])
+    end
+
+    # Only allow a trusted parameter "white list" through.
+    def user_params
+      params.require(:user).permit(:username, :password, :password_digest)
+    end
+
     def create_token(id, username)
       JWT.encode(payload(id, username), ENV['JWT_SECRET'], 'HS256')
     end
@@ -73,15 +84,4 @@ class UsersController < ApplicationController
         }
       }
     end
-
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
-    end
-
-    # Only allow a trusted parameter "white list" through.
-    def user_params
-      params.require(:user).permit(:username, :password_digest)
-    end
-
   end
