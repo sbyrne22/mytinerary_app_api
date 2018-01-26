@@ -3,7 +3,7 @@ class ItinerariesController < ApplicationController
 
   # GET /itineraries
   def index
-    itineraries = Itinerary.all
+    itineraries = Itinerary.where(user_id: params[:user_id])
 
     render json: itineraries
   end
@@ -16,6 +16,7 @@ class ItinerariesController < ApplicationController
   # POST /itineraries
   def create
     itinerary = Itinerary.new(itinerary_params)
+    itinerary.user_id = params[:user_id]
 
     if itinerary.save
       render json: itinerary, status: :created
@@ -46,6 +47,6 @@ class ItinerariesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def itinerary_params
-      params.require(:itinerary).permit(:title, :intin_start, :intin_end, :creator_id)
+      params.require(:itinerary).permit(:title, :intin_start, :intin_end, :creator_id, :user_id)
     end
 end
