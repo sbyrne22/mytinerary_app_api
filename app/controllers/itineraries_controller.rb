@@ -5,12 +5,12 @@ class ItinerariesController < ApplicationController
   def index
     itineraries = Itinerary.where(user_id: params[:user_id])
 
-    render json: itineraries
+    render json: itineraries.to_json(include: :sections)
   end
 
   # GET /itineraries/1
   def show
-    render json: itinerary
+    render json: itinerary.to_json(include: :sections)
   end
 
   # POST /itineraries
