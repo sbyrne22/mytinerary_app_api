@@ -36,13 +36,13 @@ class ItinerariesController < ApplicationController
 
   # DELETE /itineraries/1
   def destroy
-    itinerary.destroy
+    @itinerary.destroy
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_itinerary
-      itinerary = Itinerary.find(params[:id])
+      @itinerary = Itinerary.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
